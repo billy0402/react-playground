@@ -1,3 +1,12 @@
+# react-playground
+
+## environment
+
+- [macOS 12.5.1](https://www.apple.com/tw/macos/monterey/)
+- [Visual Studio Code 1.69.2](https://code.visualstudio.com/)
+- [nvm 0.39.1, node 16.16.0, npm 8.11.0](https://nodejs.org/en/)
+- [Next 12.3.0](https://nextjs.org/)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
