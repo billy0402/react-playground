@@ -18,6 +18,7 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@enums/*": ["src/enums/*"],
+      "@fixtures/*": ["src/fixtures/*"],
       "@helpers/*": ["src/helpers/*"],
       "@hooks/*": ["src/hooks/*"],
       "@models/*": ["src/models/*"],

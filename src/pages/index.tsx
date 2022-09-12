@@ -1,6 +1,10 @@
+import { execCommands } from '@fixtures/exec-commands';
+import { execCommandStyle } from '@helpers/exec-command-style';
+import useTextSelection from '@hooks/useTextSelection';
 import type { NextPage } from 'next';
 import { useState } from 'react';
-import { useTextSelection } from 'use-text-selection';
+
+var containers = 'h1,h2,h3,h4,h5,h6,div';
 
 const HomePage: NextPage = () => {
   const { clientRect, isCollapsed } = useTextSelection();
@@ -14,7 +18,10 @@ const HomePage: NextPage = () => {
     currentRange?.surroundContents(tagString);
   };
 
-  const createRangeTag = (tagName: 'b') => {
+  const createRangeTag = async (tagName: 'b') => {
+    await execCommandStyle(execCommands[0], containers);
+    return;
+
     let selection = window.getSelection();
     const range = selection?.getRangeAt(0);
 
@@ -32,6 +39,14 @@ const HomePage: NextPage = () => {
     setCurrentRange(range);
   };
 
+  // const onExecCommand = async (
+  //   selection: Selection,
+  //   action: ExecCommandStyle,
+  //   containers: string,
+  // ) => {
+  //   await execCommandStyle(selection, action, containers);
+  // };
+
   return (
     <>
       <article contentEditable suppressContentEditableWarning>
@@ -41,7 +56,7 @@ const HomePage: NextPage = () => {
         Provident fugiat facilis porro dignissimos!
       </article>
       {!isCollapsed && clientRect && (
-        <div
+        <ol
           style={{
             left: clientRect.x,
             top: clientRect.y + clientRect.height,
@@ -50,10 +65,16 @@ const HomePage: NextPage = () => {
           }}
           id='control'
         >
-          <button onClick={createRange}>新增連結區域</button>
-          <button onClick={() => createRangeTag('b')}>粗體文字</button>
-          <button onClick={createRange}>斜體文字</button>
-        </div>
+          <li>
+            <button onClick={createRange}>新增連結區域</button>
+          </li>
+          <li>
+            <button onClick={() => createRangeTag('b')}>粗體文字</button>
+          </li>
+          <li>
+            <button onClick={createRange}>斜體文字</button>
+          </li>
+        </ol>
       )}
 
       <span>

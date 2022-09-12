@@ -57,11 +57,8 @@ const updateSelection = async (
   action: ExecCommandStyle,
   containers: string,
 ) => {
-  container.style[action.style] = await getStyleValue(
-    container,
-    action,
-    containers,
-  );
+  const styleValue = await getStyleValue(container, action, containers);
+  container.setAttribute('style', `${action.style}:${styleValue}`);
 
   await cleanChildren(action, container);
 };
@@ -193,7 +190,8 @@ const createSpan = async (
   containers: string,
 ): Promise<HTMLSpanElement> => {
   const span: HTMLSpanElement = document.createElement('span');
-  span.style[action.style] = await getStyleValue(container, action, containers);
+  const styleValue = await getStyleValue(container, action, containers);
+  span.setAttribute('style', `${action.style}:${styleValue}`);
 
   return span;
 };

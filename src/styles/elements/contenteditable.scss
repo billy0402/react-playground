@@ -1,0 +1,11 @@
+[contenteditable='true'] {
+  padding: 0.5rem;
+
+  &:focus {
+    outline: 1px solid lightgray;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}
