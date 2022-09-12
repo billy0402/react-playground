@@ -1,3 +1,5 @@
+import Layout from '@components/Layout';
+import wrapper from '@store';
 import '@styles/globals.scss';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -8,9 +10,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>React Playground</title>
       </Head>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </>
   );
 };
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

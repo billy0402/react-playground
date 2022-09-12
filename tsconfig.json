@@ -16,7 +16,16 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@components/*": ["src/components/*"],
+      "@enums/*": ["src/enums/*"],
+      "@helpers/*": ["src/helpers/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@models/*": ["src/models/*"],
       "@pages/*": ["src/pages/*"],
+      "@reducers": ["src/reducers"],
+      "@reducers/*": ["src/reducers/*"],
+      "@store": ["src/store"],
+      "@store/*": ["src/store/*"],
       "@styles/*": ["src/styles/*"],
       "@public/*": ["public/*"]
     }
