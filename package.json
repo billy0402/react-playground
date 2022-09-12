@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "next": "12.3.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@types/node": "18.7.16",
-    "@types/react": "18.0.19",
-    "@types/react-dom": "18.0.6",
+    "@types/react": "^17.0.49",
+    "@types/react-dom": "^17.0.17",
     "eslint": "8.23.1",
     "eslint-config-next": "12.3.0",
     "typescript": "4.8.3"
