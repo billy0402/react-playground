@@ -1,11 +1,11 @@
 type ExecCommandStyle = {
   style:
     | 'color'
-    | 'background-color'
-    | 'font-size'
-    | 'font-weight'
-    | 'font-style'
-    | 'text-decoration';
+    | 'backgroundColor'
+    | 'fontSize'
+    | 'fontWeight'
+    | 'fontStyle'
+    | 'textDecoration';
   value: string;
   initial: (element: HTMLElement | null) => Promise<boolean>;
 };

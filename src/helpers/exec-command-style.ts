@@ -1,4 +1,5 @@
 import type { ExecCommandStyle } from '@models/exec-command-style';
+import { isContainer } from './utils';
 
 const execCommandStyle = async (
   action: ExecCommandStyle,
@@ -93,7 +94,7 @@ const getStyleValue = async (
 
 const findStyleNode = async (
   node: Node,
-  style: string,
+  style: keyof CSSStyleDeclaration,
   containers: string,
 ): Promise<Node | null> => {
   // Just in case
@@ -108,7 +109,7 @@ const findStyleNode = async (
     return null;
   }
 
-  if (DeckdeckgoInlineEditorUtils.isContainer(containers, node)) {
+  if (isContainer(containers, node)) {
     return null;
   }
 
@@ -133,14 +134,14 @@ const cleanChildren = async (
   }
 
   // Clean direct (> *) children with same style
-  const children: HTMLElement[] = Array.from(span.children).filter(
-    (element: HTMLElement) => {
-      return (
-        element.style[action.style] !== undefined &&
-        element.style[action.style] !== ''
-      );
-    },
-  ) as HTMLElement[];
+  const children: HTMLElement[] = (
+    Array.from(span.children) as HTMLElement[]
+  ).filter((element: HTMLElement) => {
+    return (
+      element.style[action.style] !== undefined &&
+      element.style[action.style] !== ''
+    );
+  }) as HTMLElement[];
 
   if (children && children.length > 0) {
     children.forEach((element: HTMLElement) => {
@@ -153,11 +154,11 @@ const cleanChildren = async (
   }
 
   // Direct children (> *) may have children (*) to be clean too
-  const cleanChildrenChildren: Promise<void>[] = Array.from(span.children).map(
-    (element: HTMLElement) => {
-      return cleanChildren(action, element);
-    },
-  );
+  const cleanChildrenChildren: Promise<void>[] = (
+    Array.from(span.children) as HTMLElement[]
+  ).map((element: HTMLElement) => {
+    return cleanChildren(action, element);
+  });
 
   if (!cleanChildrenChildren || cleanChildrenChildren.length <= 0) {
     return;
@@ -206,18 +207,22 @@ const flattenChildren = async (
   }
 
   // Flatten direct (> *) children with no style
-  const children: HTMLElement[] = Array.from(span.children).filter(
-    (element: HTMLElement) => {
-      const style: string | null = element.getAttribute('style');
-      return !style || style === '';
-    },
-  ) as HTMLElement[];
+  const children: HTMLElement[] = (
+    Array.from(span.children) as HTMLElement[]
+  ).filter((element: HTMLElement) => {
+    const style: string | null = element.getAttribute('style');
+    return !style || style === '';
+  }) as HTMLElement[];
 
   if (children && children.length > 0) {
     children.forEach((element: HTMLElement) => {
       const styledChildren: NodeListOf<HTMLElement> =
         element.querySelectorAll('[style]');
-      if (!styledChildren || styledChildren.length === 0) {
+      if (
+        (!styledChildren || styledChildren.length === 0) &&
+        element.textContent &&
+        element.parentElement
+      ) {
         const text: Text = document.createTextNode(element.textContent);
         element.parentElement.replaceChild(text, element);
       }
@@ -227,8 +232,8 @@ const flattenChildren = async (
   }
 
   // Direct children (> *) may have children (*) to flatten too
-  const flattenChildrenChildren: Promise<void>[] = Array.from(
-    span.children,
+  const flattenChildrenChildren: Promise<void>[] = (
+    Array.from(span.children) as HTMLElement[]
   ).map((element: HTMLElement) => {
     return flattenChildren(action, element);
   });
