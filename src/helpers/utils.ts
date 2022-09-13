@@ -40,4 +40,4 @@ const findContainer = (
   });
 };
 
-export { isContainer };
+export { isContainer, findContainer };

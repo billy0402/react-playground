@@ -1,4 +1,4 @@
-import type { ExecCommandStyle } from '@models/exec-command-style';
+import type { ExecCommandStyle } from '@models/exec-command';
 import { isContainer } from './utils';
 
 const execCommandStyle = async (
@@ -6,16 +6,10 @@ const execCommandStyle = async (
   containers: string,
 ) => {
   const selection: Selection | null = await getSelection();
-
-  if (!selection) {
-    return;
-  }
+  if (!selection) return;
 
   const anchorNode: Node | null = selection.anchorNode;
-
-  if (!anchorNode) {
-    return;
-  }
+  if (!anchorNode) return;
 
   const container: HTMLElement =
     anchorNode.nodeType !== Node.TEXT_NODE &&
@@ -23,7 +17,6 @@ const execCommandStyle = async (
       ? (anchorNode as HTMLElement)
       : (anchorNode.parentElement as HTMLElement);
 
-  // TODO: next chapter
   const sameSelection: boolean =
     container && container.innerText === selection.toString();
 
@@ -33,7 +26,6 @@ const execCommandStyle = async (
     container.style[action.style] !== undefined
   ) {
     await updateSelection(container, action, containers);
-
     return;
   }
 
@@ -126,9 +118,7 @@ const cleanChildren = async (
   action: ExecCommandStyle,
   span: HTMLSpanElement,
 ) => {
-  if (!span.hasChildNodes()) {
-    return;
-  }
+  if (!span.hasChildNodes()) return;
 
   // Clean direct (> *) children with same style
   const children: HTMLElement[] = (
@@ -157,9 +147,7 @@ const cleanChildren = async (
     return cleanChildren(action, element);
   });
 
-  if (!cleanChildrenChildren || cleanChildrenChildren.length <= 0) {
-    return;
-  }
+  if (!cleanChildrenChildren || cleanChildrenChildren.length <= 0) return;
 
   await Promise.all(cleanChildrenChildren);
 };
@@ -200,9 +188,7 @@ const flattenChildren = async (
   action: ExecCommandStyle,
   span: HTMLSpanElement,
 ) => {
-  if (!span.hasChildNodes()) {
-    return;
-  }
+  if (!span.hasChildNodes()) return;
 
   // Flatten direct (> *) children with no style
   const children: HTMLElement[] = (
@@ -236,9 +222,7 @@ const flattenChildren = async (
     return flattenChildren(action, element);
   });
 
-  if (!flattenChildrenChildren || flattenChildrenChildren.length <= 0) {
-    return;
-  }
+  if (!flattenChildrenChildren || flattenChildrenChildren.length <= 0) return;
 
   await Promise.all(flattenChildrenChildren);
 };

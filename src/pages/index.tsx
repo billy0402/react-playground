@@ -1,10 +1,10 @@
 import { execCommands } from '@fixtures/exec-commands';
-import { execCommandStyle } from '@helpers/exec-command-style';
+import { execCommandStyle } from '@helpers/exec-command';
 import useTextSelection from '@hooks/useTextSelection';
 import type { NextPage } from 'next';
 import { useState } from 'react';
 
-var containers = 'h1,h2,h3,h4,h5,h6,div';
+const containers = 'h1,h2,h3,h4,h5,h6,div';
 
 const HomePage: NextPage = () => {
   const { clientRect, isCollapsed } = useTextSelection();

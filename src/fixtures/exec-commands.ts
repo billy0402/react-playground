@@ -1,4 +1,4 @@
-import { ExecCommandStyle } from '@models/exec-command-style';
+import { ExecCommandStyle } from '@models/exec-command';
 
 const execCommands: ExecCommandStyle[] = [
   {
