@@ -56,32 +56,44 @@ const HomePage: NextPage = () => {
         Provident fugiat facilis porro dignissimos!
       </article>
       {!isCollapsed && clientRect && (
-        <ol
-          style={{
-            left: clientRect.x,
-            top: clientRect.y + clientRect.height,
-            position: 'absolute',
-            display: 'block',
-          }}
-          id='control'
-        >
-          <li>
-            <button onClick={createRange}>新增連結區域</button>
-          </li>
-          <li>
-            <button onClick={() => createRangeTag('b')}>粗體文字</button>
-          </li>
-          <li>
-            <button onClick={createRange}>斜體文字</button>
-          </li>
-        </ol>
+        <>
+          <ol
+            className='toolbar'
+            style={{
+              left: clientRect.x,
+              top: clientRect.y + clientRect.height,
+            }}
+          >
+            <li>
+              <button type='button' onClick={createRange}>
+                新增連結區域
+              </button>
+            </li>
+            <li>
+              <button type='button' onClick={() => createRangeTag('b')}>
+                粗體文字
+              </button>
+            </li>
+            <li>
+              <button type='button' onClick={createRange}>
+                斜體文字
+              </button>
+            </li>
+          </ol>
+          <ol
+            className='toolbar'
+            style={{
+              left: clientRect.x,
+              top: clientRect.y + clientRect.height + 30,
+            }}
+          >
+            <li>
+              <input type='text' onChange={(e) => setLink(e.target.value)} />
+              <button type='button'>新增連結</button>
+            </li>
+          </ol>
+        </>
       )}
-
-      <span>
-        {currentRange?.startOffset}
-        <input type='text' onChange={(e) => setLink(e.target.value)} />
-      </span>
-      <span onClick={() => createRangeUrl()}>新增連結</span>
     </>
   );
 };

@@ -6,6 +6,12 @@
   }
 }
 
+.toolbar {
+  position: absolute;
+  display: flex;
+  flex-flow: row;
+}
+
 .bold {
   font-weight: bold;
 }
