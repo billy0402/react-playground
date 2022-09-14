@@ -32,6 +32,7 @@ const execCommandStyle = async (
   await replaceSelection(container, action, selection, containers);
 };
 
+// 取得選取範圍及內容，可能是節點或純文字
 const getSelection = (): Selection | null => {
   if (window && window.getSelection) {
     return window.getSelection();
@@ -44,6 +45,7 @@ const getSelection = (): Selection | null => {
   return null;
 };
 
+// 更新選取內容樣式，並清理子層樣式
 const updateSelection = async (
   container: HTMLElement,
   action: ExecCommandStyle,
@@ -55,6 +57,7 @@ const updateSelection = async (
   await cleanChildren(action, container);
 };
 
+// 取得要更新的樣式
 const getStyleValue = async (
   container: HTMLElement,
   action: ExecCommandStyle,
@@ -81,6 +84,7 @@ const getStyleValue = async (
   return action.value;
 };
 
+// 取得更新節點，遞迴父層到 DOM 頂層，尋找是否為繼承樣式
 const findStyleNode = async (
   node: Node,
   style: keyof CSSStyleDeclaration,
@@ -114,6 +118,7 @@ const findStyleNode = async (
   return await findStyleNode(node.parentNode, style, containers);
 };
 
+// 清理子層樣式，遞迴子層到容器底層
 const cleanChildren = async (
   action: ExecCommandStyle,
   span: HTMLSpanElement,
@@ -152,6 +157,7 @@ const cleanChildren = async (
   await Promise.all(cleanChildrenChildren);
 };
 
+// 取代選取內容樣式為 span 包覆的新節點
 const replaceSelection = async (
   container: HTMLElement,
   action: ExecCommandStyle,
@@ -172,6 +178,7 @@ const replaceSelection = async (
   selection.selectAllChildren(span);
 };
 
+// 建立 span 節點
 const createSpan = async (
   container: HTMLElement,
   action: ExecCommandStyle,
@@ -184,6 +191,7 @@ const createSpan = async (
   return span;
 };
 
+// 攤平子層，尋找空 span 沒有樣式的話就移除
 const flattenChildren = async (
   action: ExecCommandStyle,
   span: HTMLSpanElement,
