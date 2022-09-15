@@ -64,7 +64,7 @@ const getStyleValue = async (
   containers: string,
 ): Promise<string> => {
   if (!container) {
-    return action.value;
+    return action.style;
   }
 
   if (await action.initial(container)) {
@@ -81,13 +81,13 @@ const getStyleValue = async (
     return 'initial';
   }
 
-  return action.value;
+  return action.style;
 };
 
 // 取得更新節點，遞迴父層到 DOM 頂層，尋找是否為繼承樣式
 const findStyleNode = async (
   node: Node,
-  style: keyof CSSStyleDeclaration,
+  style: string,
   containers: string,
 ): Promise<Node | null> => {
   // Just in case
@@ -106,7 +106,7 @@ const findStyleNode = async (
     return null;
   }
 
-  const hasClass = (node as HTMLElement).classList.contains(style as string);
+  const hasClass = (node as HTMLElement).classList.contains(style);
   if (hasClass) {
     return node;
   }
