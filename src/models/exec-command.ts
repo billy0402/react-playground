@@ -1,5 +1,5 @@
 type ExecCommandStyle = {
-  style: 'bold';
+  value: 'bold';
   initial: (element: HTMLElement | null) => Promise<boolean>;
 };
 

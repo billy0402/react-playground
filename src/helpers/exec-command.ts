@@ -23,7 +23,7 @@ const execCommandStyle = async (
   if (
     sameSelection &&
     !isContainer(containers, container) &&
-    container.classList.contains(action.style)
+    container.classList.contains(action.value)
   ) {
     await updateSelection(container, action, containers);
     return;
@@ -89,7 +89,7 @@ const getStyleValue = async (
   //   return 'initial';
   // }
 
-  return action.style;
+  return action.value;
 };
 
 // 取得更新節點，遞迴父層到 DOM 頂層，尋找是否為繼承樣式
@@ -133,12 +133,12 @@ const cleanChildren = async (
   const children: HTMLElement[] = (
     Array.from(span.children) as HTMLElement[]
   ).filter((element: HTMLElement) =>
-    element.classList.contains(action.style),
+    element.classList.contains(action.value),
   ) as HTMLElement[];
 
   if (children && children.length > 0) {
     children.forEach((element: HTMLElement) => {
-      element.classList.remove(action.style);
+      element.classList.remove(action.value);
 
       if (element.getAttribute('class') === '' || !element.classList.length) {
         element.removeAttribute('class');
@@ -203,7 +203,7 @@ const flattenChildren = async (
   const children: HTMLElement[] = (
     Array.from(span.children) as HTMLElement[]
   ).filter(
-    (element: HTMLElement) => !element.classList.contains(action.style),
+    (element: HTMLElement) => !element.classList.contains(action.value),
   ) as HTMLElement[];
 
   if (children && children.length > 0) {

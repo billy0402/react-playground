@@ -2,7 +2,7 @@ import { ExecCommandStyle } from '@models/exec-command';
 
 const execCommands: ExecCommandStyle[] = [
   {
-    style: 'bold',
+    value: 'bold',
     initial: (element: HTMLElement | null) =>
       Promise.resolve(!!element && element.classList.contains('bold')),
   },
