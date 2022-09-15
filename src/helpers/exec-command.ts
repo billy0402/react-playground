@@ -23,7 +23,7 @@ const execCommandStyle = async (
   if (
     sameSelection &&
     !isContainer(containers, container) &&
-    container.style[action.style] !== undefined
+    container.classList.contains(action.style)
   ) {
     await updateSelection(container, action, containers);
     return;
@@ -52,7 +52,7 @@ const updateSelection = async (
   containers: string,
 ) => {
   const styleValue = await getStyleValue(container, action, containers);
-  container.setAttribute('style', `${action.style}:${styleValue}`);
+  container.classList.add(styleValue);
 
   await cleanChildren(action, container);
 };
@@ -106,12 +106,8 @@ const findStyleNode = async (
     return null;
   }
 
-  const hasStyle: boolean =
-    (node as HTMLElement).style[style] !== null &&
-    (node as HTMLElement).style[style] !== undefined &&
-    (node as HTMLElement).style[style] !== '';
-
-  if (hasStyle) {
+  const hasClass = (node as HTMLElement).classList.contains(style as string);
+  if (hasClass) {
     return node;
   }
 
@@ -128,19 +124,16 @@ const cleanChildren = async (
   // Clean direct (> *) children with same style
   const children: HTMLElement[] = (
     Array.from(span.children) as HTMLElement[]
-  ).filter((element: HTMLElement) => {
-    return (
-      element.style[action.style] !== undefined &&
-      element.style[action.style] !== ''
-    );
-  }) as HTMLElement[];
+  ).filter((element: HTMLElement) =>
+    element.classList.contains(action.style),
+  ) as HTMLElement[];
 
   if (children && children.length > 0) {
     children.forEach((element: HTMLElement) => {
-      element.style[action.style] = '';
+      element.classList.remove(action.style);
 
-      if (element.getAttribute('style') === '' || element.style === null) {
-        element.removeAttribute('style');
+      if (element.getAttribute('class') === '' || !element.classList.length) {
+        element.removeAttribute('class');
       }
     });
   }
@@ -186,7 +179,7 @@ const createSpan = async (
 ): Promise<HTMLSpanElement> => {
   const span: HTMLSpanElement = document.createElement('span');
   const styleValue = await getStyleValue(container, action, containers);
-  span.setAttribute('style', `${action.style}:${styleValue}`);
+  span.classList.add(styleValue);
 
   return span;
 };
@@ -201,15 +194,15 @@ const flattenChildren = async (
   // Flatten direct (> *) children with no style
   const children: HTMLElement[] = (
     Array.from(span.children) as HTMLElement[]
-  ).filter((element: HTMLElement) => {
-    const style: string | null = element.getAttribute('style');
-    return !style || style === '';
-  }) as HTMLElement[];
+  ).filter(
+    (element: HTMLElement) => !element.classList.contains(action.style),
+  ) as HTMLElement[];
 
   if (children && children.length > 0) {
     children.forEach((element: HTMLElement) => {
       const styledChildren: NodeListOf<HTMLElement> =
-        element.querySelectorAll('[style]');
+        element.querySelectorAll('[class]');
+
       if (
         (!styledChildren || styledChildren.length === 0) &&
         element.textContent &&
