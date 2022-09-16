@@ -20,16 +20,57 @@ const execCommandStyle = async (
   const sameSelection: boolean =
     container && container.innerText === selection.toString();
 
-  if (
-    sameSelection &&
-    !isContainer(containers, container) &&
-    container.classList.contains(action.value)
-  ) {
-    await updateSelection(container, action, containers);
-    return;
+  if (action.cmd === 'style') {
+    if (
+      sameSelection &&
+      !isContainer(containers, container) &&
+      container.classList.contains(action.value)
+    ) {
+      await updateSelection(container, action, containers);
+      return;
+    }
+
+    await replaceSelection(container, action, selection, containers);
   }
 
-  await replaceSelection(container, action, selection, containers);
+  if (action.cmd === 'link') {
+    await replaceLink(container, action, selection, containers);
+  }
+};
+
+const updateLink = async (
+  container: HTMLElement,
+  action: ExecCommandStyle,
+  containers: string,
+) => {};
+
+const replaceLink = async (
+  container: HTMLElement,
+  action: ExecCommandStyle,
+  selection: Selection,
+  containers: string,
+) => {
+  console.log(container);
+  if (!container.textContent) return;
+
+  const a: HTMLAnchorElement = document.createElement('a');
+  const linkText: Text = document.createTextNode(container.textContent);
+  a.appendChild(linkText);
+  a.title = container.textContent;
+  a.href = action.value;
+  console.log(a);
+
+  const target: Node | undefined = Array.from(container.childNodes).find(
+    (node: Node) => {
+      return (
+        node.textContent &&
+        node.textContent.trim().indexOf(container.textContent!) > -1
+      );
+    },
+  );
+  console.log(target);
+  if (!target || !target.parentElement) return;
+  target.parentElement.replaceChild(a, target);
 };
 
 // 取得選取範圍及內容，可能是節點或純文字

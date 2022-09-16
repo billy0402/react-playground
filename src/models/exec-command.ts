@@ -1,5 +1,6 @@
 type ExecCommandStyle = {
-  value: 'bold';
+  cmd: 'style' | 'link';
+  value: string;
   initial: (element: HTMLElement | null) => Promise<boolean>;
 };
 
