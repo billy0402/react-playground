@@ -277,4 +277,4 @@ const flattenChildren = async (
   await Promise.all(flattenChildrenChildren);
 };
 
-export { execCommandStyle };
+export { execCommandStyle, getSelection };

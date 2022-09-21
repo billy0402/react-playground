@@ -12,6 +12,7 @@ const defaultPosition = { x: 0, y: 0, height: 0 };
 const HomePage: NextPage = () => {
   const { clientRect, isCollapsed } = useTextSelection();
   const [tempPosition, setTempPosition] = useState(defaultPosition);
+  const [currentRange, setCurrentRange] = useState<Range>();
   const [actionType, setActionType] = useState<'link'>();
   const [link, setLink] = useState('');
   const { ref, isOutsideTrigger, setIsOutsideTrigger } =
@@ -36,6 +37,9 @@ const HomePage: NextPage = () => {
   };
 
   const actionLink = async () => {
+    if (!currentRange) return;
+    getSelection()?.addRange(currentRange);
+
     await execCommandStyle(
       { cmd: 'link', value: link } as ExecCommandStyle,
       containers,
@@ -46,7 +50,15 @@ const HomePage: NextPage = () => {
 
   return (
     <>
-      <article contentEditable suppressContentEditableWarning>
+      <article
+        contentEditable
+        suppressContentEditableWarning
+        onSelect={() => {
+          setCurrentRange(getSelection()?.getRangeAt(0));
+        }}
+        // onMouseDown={() => console.log('onMouseDown')}
+        // onTouchStart={() => console.log('onTouchStart')}
+      >
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore maiores
         doloremque officiis, reiciendis asperiores distinctio. Veritatis
         suscipit quis aspernatur blanditiis. Ipsa iusto officiis quae delectus.
