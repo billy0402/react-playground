@@ -38,6 +38,17 @@ const execCommandStyle = async (
   }
 };
 
+const createAnchor = async (
+  container: HTMLElement,
+  action: ExecCommandStyle,
+  containers: string,
+): Promise<HTMLAnchorElement> => {
+  const anchor: HTMLAnchorElement = document.createElement('a');
+  // anchor.title = textContent;
+  anchor.href = action.value;
+  return anchor;
+};
+
 const updateLink = async (
   container: HTMLElement,
   action: ExecCommandStyle,
@@ -50,27 +61,19 @@ const replaceLink = async (
   selection: Selection,
   containers: string,
 ) => {
-  console.log(container);
-  if (!container.textContent) return;
+  const range: Range = selection.getRangeAt(0);
 
-  const a: HTMLAnchorElement = document.createElement('a');
-  const linkText: Text = document.createTextNode(container.textContent);
-  a.appendChild(linkText);
-  a.title = container.textContent;
-  a.href = action.value;
-  console.log(a);
+  const fragment: DocumentFragment = range.extractContents();
 
-  const target: Node | undefined = Array.from(container.childNodes).find(
-    (node: Node) => {
-      return (
-        node.textContent &&
-        node.textContent.trim().indexOf(container.textContent!) > -1
-      );
-    },
+  const anchor: HTMLAnchorElement = await createAnchor(
+    container,
+    action,
+    containers,
   );
-  console.log(target);
-  if (!target || !target.parentElement) return;
-  target.parentElement.replaceChild(a, target);
+  anchor.appendChild(fragment);
+
+  range.insertNode(anchor);
+  selection.selectAllChildren(anchor);
 };
 
 // 取得選取範圍及內容，可能是節點或純文字
