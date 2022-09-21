@@ -1,17 +1,16 @@
 import { execCommands } from '@fixtures/exec-commands';
 import { execCommandStyle } from '@helpers/exec-command';
 import useOutsideTrigger from '@hooks/useOutsideTrigger';
-import useTextSelection from '@hooks/useTextSelection';
+import useTextSelection, { ClientRect } from '@hooks/useTextSelection';
 import { ExecCommandStyle } from '@models/exec-command';
 import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
 const containers = 'h1,h2,h3,h4,h5,h6,div';
-const defaultPosition = { x: 0, y: 0, height: 0 };
 
 const HomePage: NextPage = () => {
   const { clientRect, isCollapsed } = useTextSelection();
-  const [tempPosition, setTempPosition] = useState(defaultPosition);
+  const [tempPosition, setTempPosition] = useState<ClientRect>();
   const [currentRange, setCurrentRange] = useState<Range>();
   const [actionType, setActionType] = useState<'link'>();
   const [link, setLink] = useState('');
@@ -20,7 +19,7 @@ const HomePage: NextPage = () => {
 
   useEffect(() => {
     if (actionType) return;
-    setTempPosition(clientRect || defaultPosition);
+    setTempPosition(clientRect);
   }, [actionType, clientRect]);
 
   useEffect(() => {
@@ -51,7 +50,7 @@ const HomePage: NextPage = () => {
       containers,
     );
     setActionType(undefined);
-    setTempPosition(defaultPosition);
+    setLink('');
   };
 
   return (
@@ -70,7 +69,7 @@ const HomePage: NextPage = () => {
         suscipit quis aspernatur blanditiis. Ipsa iusto officiis quae delectus.
         Provident fugiat facilis porro dignissimos!
       </article>
-      {(!isCollapsed || actionType) && clientRect && (
+      {(!isCollapsed || actionType) && tempPosition && (
         <>
           {!actionType && (
             <ul
