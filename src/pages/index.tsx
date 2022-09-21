@@ -28,6 +28,12 @@ const HomePage: NextPage = () => {
     setActionType(undefined);
   }, [isOutsideTrigger]);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    actionLink();
+  };
+
   const actionBold = async () => {
     await execCommandStyle(execCommands[0], containers);
   };
@@ -113,6 +119,7 @@ const HomePage: NextPage = () => {
                     type='text'
                     value={link}
                     onChange={(e) => setLink(e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e)}
                   />
                   <button type='button' onClick={actionLink}>
                     新增連結
