@@ -1,5 +1,7 @@
 import { execCommands } from '@fixtures/exec-commands';
-import { execCommandStyle } from '@helpers/exec-command';
+import { execCommandLink } from '@helpers/exec-command-link';
+import { execCommandStyle } from '@helpers/exec-command-style';
+import { getSelection } from '@helpers/exec-command-utils';
 import useOutsideTrigger from '@hooks/useOutsideTrigger';
 import useTextSelection, { ClientRect } from '@hooks/useTextSelection';
 import { ExecCommandStyle } from '@models/exec-command';
@@ -45,7 +47,7 @@ const HomePage: NextPage = () => {
     if (!currentRange) return;
     getSelection()?.addRange(currentRange);
 
-    await execCommandStyle(
+    await execCommandLink(
       { cmd: 'link', value: link } as ExecCommandStyle,
       containers,
     );

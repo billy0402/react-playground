@@ -1,5 +1,5 @@
 import type { ExecCommandStyle } from '@models/exec-command';
-import { isContainer } from './exec-command-utils';
+import { getSelection, isContainer } from './exec-command-utils';
 
 const execCommandStyle = async (
   action: ExecCommandStyle,
@@ -20,73 +20,16 @@ const execCommandStyle = async (
   const sameSelection: boolean =
     container && container.innerText === selection.toString();
 
-  if (action.cmd === 'style') {
-    if (
-      sameSelection &&
-      !isContainer(containers, container) &&
-      container.classList.contains(action.value)
-    ) {
-      await updateSelection(container, action, containers);
-      return;
-    }
-
-    await replaceSelection(container, action, selection, containers);
+  if (
+    sameSelection &&
+    !isContainer(containers, container) &&
+    container.classList.contains(action.value)
+  ) {
+    await updateSelection(container, action, containers);
+    return;
   }
 
-  if (action.cmd === 'link') {
-    await replaceLink(container, action, selection, containers);
-  }
-};
-
-const createAnchor = async (
-  container: HTMLElement,
-  action: ExecCommandStyle,
-  containers: string,
-): Promise<HTMLAnchorElement> => {
-  const anchor: HTMLAnchorElement = document.createElement('a');
-  // anchor.title = textContent;
-  anchor.href = action.value;
-  return anchor;
-};
-
-const updateLink = async (
-  container: HTMLElement,
-  action: ExecCommandStyle,
-  containers: string,
-) => {};
-
-const replaceLink = async (
-  container: HTMLElement,
-  action: ExecCommandStyle,
-  selection: Selection,
-  containers: string,
-) => {
-  const range: Range = selection.getRangeAt(0);
-
-  const fragment: DocumentFragment = range.extractContents();
-
-  const anchor: HTMLAnchorElement = await createAnchor(
-    container,
-    action,
-    containers,
-  );
-  anchor.appendChild(fragment);
-
-  range.insertNode(anchor);
-  selection.selectAllChildren(anchor);
-};
-
-// 取得選取範圍及內容，可能是節點或純文字
-const getSelection = (): Selection | null => {
-  if (window && window.getSelection) {
-    return window.getSelection();
-  } else if (document && document.getSelection) {
-    return document.getSelection();
-  } else if (document && (document as any).selection) {
-    return (document as any).selection.createRange().text;
-  }
-
-  return null;
+  await replaceSelection(container, action, selection, containers);
 };
 
 // 更新選取內容樣式，並清理子層樣式
@@ -280,4 +223,4 @@ const flattenChildren = async (
   await Promise.all(flattenChildrenChildren);
 };
 
-export { execCommandStyle, getSelection };
+export { execCommandStyle };

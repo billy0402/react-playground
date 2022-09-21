@@ -40,4 +40,17 @@ const findContainer = (
   });
 };
 
-export { isContainer, findContainer };
+// 取得選取範圍及內容，可能是節點或純文字
+const getSelection = (): Selection | null => {
+  if (window && window.getSelection) {
+    return window.getSelection();
+  } else if (document && document.getSelection) {
+    return document.getSelection();
+  } else if (document && (document as any).selection) {
+    return (document as any).selection.createRange().text;
+  }
+
+  return null;
+};
+
+export { isContainer, findContainer, getSelection };
