@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
 export type ClientRect = Record<keyof Omit<DOMRect, 'toJSON'>, number>;
 
@@ -95,7 +95,10 @@ const useTextSelection = (target?: HTMLElement) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
-  useLayoutEffect(() => {
+  const useIsomorphicLayoutEffect =
+    typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+  useIsomorphicLayoutEffect(() => {
     document.addEventListener('selectionchange', handler);
     document.addEventListener('keydown', handler);
     document.addEventListener('keyup', handler);
