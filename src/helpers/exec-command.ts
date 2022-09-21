@@ -1,5 +1,5 @@
 import type { ExecCommandStyle } from '@models/exec-command';
-import { isContainer } from './utils';
+import { isContainer } from './exec-command-utils';
 
 const execCommandStyle = async (
   action: ExecCommandStyle,

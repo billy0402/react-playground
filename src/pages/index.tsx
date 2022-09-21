@@ -1,18 +1,31 @@
 import { execCommands } from '@fixtures/exec-commands';
 import { execCommandStyle } from '@helpers/exec-command';
-import type { ClientRect } from '@hooks/useTextSelection';
+import useOutsideTrigger from '@hooks/useOutsideTrigger';
 import useTextSelection from '@hooks/useTextSelection';
 import { ExecCommandStyle } from '@models/exec-command';
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const containers = 'h1,h2,h3,h4,h5,h6,div';
+const defaultPosition = { x: 0, y: 0, height: 0 };
 
 const HomePage: NextPage = () => {
   const { clientRect, isCollapsed } = useTextSelection();
-  const [tempPosition, setTempPosition] = useState<ClientRect>();
+  const [tempPosition, setTempPosition] = useState(defaultPosition);
   const [actionType, setActionType] = useState<'link'>();
   const [link, setLink] = useState('');
+  const { ref, isOutsideTrigger, setIsOutsideTrigger } =
+    useOutsideTrigger<HTMLUListElement>(false);
+
+  useEffect(() => {
+    if (actionType) return;
+    setTempPosition(clientRect || defaultPosition);
+  }, [actionType, clientRect]);
+
+  useEffect(() => {
+    if (isOutsideTrigger) return;
+    setActionType(undefined);
+  }, [isOutsideTrigger]);
 
   const actionBold = async () => {
     await execCommandStyle(execCommands[0], containers);
@@ -28,7 +41,7 @@ const HomePage: NextPage = () => {
       containers,
     );
     setActionType(undefined);
-    setTempPosition(undefined);
+    setTempPosition(defaultPosition);
   };
 
   return (
@@ -42,13 +55,11 @@ const HomePage: NextPage = () => {
       {(!isCollapsed || actionType) && clientRect && (
         <>
           {!actionType && (
-            <ol
+            <ul
               className='toolbar'
               style={{
-                left: (tempPosition || clientRect).x,
-                top:
-                  (tempPosition || clientRect).y +
-                  (tempPosition || clientRect).height,
+                left: tempPosition.x,
+                top: tempPosition.y + tempPosition.height,
               }}
             >
               <li>
@@ -67,22 +78,22 @@ const HomePage: NextPage = () => {
                   onClick={() => {
                     setActionType('link');
                     setTempPosition(clientRect);
+                    setIsOutsideTrigger(true);
                   }}
                 >
                   新增連結區域
                 </button>
               </li>
-            </ol>
+            </ul>
           )}
-          {actionType && (
-            <ol
+          {actionType && isOutsideTrigger && (
+            <ul
               className='toolbar'
               style={{
-                left: (tempPosition || clientRect).x,
-                top:
-                  (tempPosition || clientRect).y +
-                  (tempPosition || clientRect).height,
+                left: tempPosition.x,
+                top: tempPosition.y + tempPosition.height,
               }}
+              ref={ref}
             >
               {actionType === 'link' && (
                 <li>
@@ -96,7 +107,7 @@ const HomePage: NextPage = () => {
                   </button>
                 </li>
               )}
-            </ol>
+            </ul>
           )}
         </>
       )}
