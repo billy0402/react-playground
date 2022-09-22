@@ -23,7 +23,7 @@ const execCommandLink = async (
   if (
     sameSelection &&
     !isContainer(containers, container) &&
-    container.getAttribute('href') === action.value
+    container.getAttribute('href')
   ) {
     await updateLink(container, action, containers);
     return;
@@ -38,17 +38,7 @@ const updateLink = async (
   action: ExecCommandStyle,
   containers: string,
 ) => {
-  const styleValue = await getStyleValue(container, action, containers);
-  if (container.classList.contains(styleValue)) {
-    container.classList.remove(styleValue);
-
-    if (!container.classList.length) {
-      container.replaceWith(...Array.from(container.childNodes));
-    }
-  } else {
-    container.classList.add(styleValue);
-  }
-
+  container.setAttribute('href', action.value);
   await cleanChildren(action, container);
 };
 
@@ -101,8 +91,8 @@ const findStyleNode = async (
     return null;
   }
 
-  const hasClass = (node as HTMLElement).classList.contains(style);
-  if (hasClass) {
+  const hasHref = (node as HTMLElement).getAttribute('href');
+  if (hasHref) {
     return node;
   }
 
@@ -120,17 +110,11 @@ const cleanChildren = async (
   const children: HTMLElement[] = (
     Array.from(span.children) as HTMLElement[]
   ).filter((element: HTMLElement) =>
-    element.classList.contains(action.value),
+    element.getAttribute('href'),
   ) as HTMLElement[];
 
   if (children && children.length > 0) {
-    children.forEach((element: HTMLElement) => {
-      element.classList.remove(action.value);
-
-      if (element.getAttribute('class') === '' || !element.classList.length) {
-        element.removeAttribute('class');
-      }
-    });
+    span.replaceWith(...Array.from(children));
   }
 
   // Direct children (> *) may have children (*) to be clean too
