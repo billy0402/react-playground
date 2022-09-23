@@ -42,63 +42,6 @@ const updateLink = async (
   await cleanChildren(action, container);
 };
 
-// 取得要更新的樣式
-const getStyleValue = async (
-  container: HTMLElement,
-  action: ExecCommandStyle,
-  containers: string,
-): Promise<string> => {
-  // if (!container) {
-  //   return action.style;
-  // }
-
-  // if (await action.initial(container)) {
-  //   return 'initial';
-  // }
-
-  // const style: Node | null = await findStyleNode(
-  //   container,
-  //   action.style,
-  //   containers,
-  // );
-
-  // if (await action.initial(style as HTMLElement)) {
-  //   return 'initial';
-  // }
-
-  return action.value;
-};
-
-// 取得更新節點，遞迴父層到 DOM 頂層，尋找是否為繼承樣式
-const findStyleNode = async (
-  node: Node,
-  style: string,
-  containers: string,
-): Promise<Node | null> => {
-  // Just in case
-  if (
-    node.nodeName.toUpperCase() === 'HTML' ||
-    node.nodeName.toUpperCase() === 'BODY'
-  ) {
-    return null;
-  }
-
-  if (!node.parentNode) {
-    return null;
-  }
-
-  if (isContainer(containers, node)) {
-    return null;
-  }
-
-  const hasHref = (node as HTMLElement).getAttribute('href');
-  if (hasHref) {
-    return node;
-  }
-
-  return await findStyleNode(node.parentNode, style, containers);
-};
-
 // 清理子層樣式，遞迴子層到容器底層
 const cleanChildren = async (
   action: ExecCommandStyle,
@@ -161,50 +104,6 @@ const createAnchor = async (
   // anchor.title = textContent;
   anchor.href = action.value;
   return anchor;
-};
-
-// 攤平子層，尋找空 span 沒有樣式的話就移除
-const flattenChildren = async (
-  action: ExecCommandStyle,
-  span: HTMLSpanElement,
-) => {
-  if (!span.hasChildNodes()) return;
-
-  // Flatten direct (> *) children with no style
-  const children: HTMLElement[] = (
-    Array.from(span.children) as HTMLElement[]
-  ).filter(
-    (element: HTMLElement) => !element.classList.contains(action.value),
-  ) as HTMLElement[];
-
-  if (children && children.length > 0) {
-    children.forEach((element: HTMLElement) => {
-      const styledChildren: NodeListOf<HTMLElement> =
-        element.querySelectorAll('[class]');
-
-      if (
-        (!styledChildren || styledChildren.length === 0) &&
-        element.textContent &&
-        element.parentElement
-      ) {
-        const text: Text = document.createTextNode(element.textContent);
-        element.parentElement.replaceChild(text, element);
-      }
-    });
-
-    return;
-  }
-
-  // Direct children (> *) may have children (*) to flatten too
-  const flattenChildrenChildren: Promise<void>[] = (
-    Array.from(span.children) as HTMLElement[]
-  ).map((element: HTMLElement) => {
-    return flattenChildren(action, element);
-  });
-
-  if (!flattenChildrenChildren || flattenChildrenChildren.length <= 0) return;
-
-  await Promise.all(flattenChildrenChildren);
 };
 
 export { execCommandLink };
