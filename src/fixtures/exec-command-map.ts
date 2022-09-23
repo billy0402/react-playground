@@ -1,18 +1,16 @@
 import { ExecCommandStyle } from '@models/exec-command';
 
-const execCommands: ExecCommandStyle[] = [
-  {
-    cmd: 'style',
+const execCommandMap: { [key: string]: ExecCommandStyle } = {
+  bold: {
     value: 'bold',
     initial: (element: HTMLElement | null) =>
       Promise.resolve(!!element && element.classList.contains('bold')),
   },
-  {
-    cmd: 'style',
+  italic: {
     value: 'italic',
     initial: (element: HTMLElement | null) =>
       Promise.resolve(!!element && element.classList.contains('italic')),
   },
-];
+};
 
-export { execCommands };
+export default execCommandMap;

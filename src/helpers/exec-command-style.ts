@@ -23,7 +23,7 @@ const execCommandStyle = async (
   if (
     sameSelection &&
     !isContainer(containers, container) &&
-    container.classList.contains(action.value)
+    container.classList.length > 0
   ) {
     await updateSelection(container, action, containers);
     return;
@@ -41,12 +41,21 @@ const updateSelection = async (
   const styleValue = await getStyleValue(container, action, containers);
   if (container.classList.contains(styleValue)) {
     container.classList.remove(styleValue);
-
-    if (!container.classList.length) {
-      container.replaceWith(...Array.from(container.childNodes));
-    }
   } else {
     container.classList.add(styleValue);
+  }
+
+  if (
+    container.classList.contains(action.value) &&
+    container.classList.contains(`no-${action.value}`)
+  ) {
+    container.classList.remove(
+      styleValue.startsWith('no-') ? action.value : `no-${action.value}`,
+    );
+  }
+
+  if (!container.classList.length) {
+    container.replaceWith(...Array.from(container.childNodes));
   }
 
   await cleanChildren(action, container);
@@ -58,25 +67,16 @@ const getStyleValue = async (
   action: ExecCommandStyle,
   containers: string,
 ): Promise<string> => {
-  // if (!container) {
-  //   return action.style;
-  // }
+  const parent: Node | null = await findStyleNode(
+    container,
+    action.value,
+    containers,
+  );
 
-  // if (await action.initial(container)) {
-  //   return 'initial';
-  // }
+  const hasOwnStyle = await action.initial(container as HTMLElement);
+  const hasParentStyle = await action.initial(parent as HTMLElement);
 
-  // const style: Node | null = await findStyleNode(
-  //   container,
-  //   action.style,
-  //   containers,
-  // );
-
-  // if (await action.initial(style as HTMLElement)) {
-  //   return 'initial';
-  // }
-
-  return action.value;
+  return !hasOwnStyle && !hasParentStyle ? action.value : `no-${action.value}`;
 };
 
 // 取得更新節點，遞迴父層到 DOM 頂層，尋找是否為繼承樣式

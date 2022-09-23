@@ -1,4 +1,4 @@
-import { execCommands } from '@fixtures/exec-commands';
+import execCommandMap from '@fixtures/exec-command-map';
 import { execCommandLink } from '@helpers/exec-command-link';
 import { execCommandStyle } from '@helpers/exec-command-style';
 import { getSelection } from '@helpers/exec-command-utils';
@@ -36,21 +36,18 @@ const HomePage: NextPage = () => {
   };
 
   const actionBold = async () => {
-    await execCommandStyle(execCommands[0], containers);
+    await execCommandStyle(execCommandMap['bold'], containers);
   };
 
   const actionItalic = async () => {
-    await execCommandStyle(execCommands[1], containers);
+    await execCommandStyle(execCommandMap['italic'], containers);
   };
 
   const actionLink = async () => {
     if (!currentRange) return;
     getSelection()?.addRange(currentRange);
 
-    await execCommandLink(
-      { cmd: 'link', value: link } as ExecCommandStyle,
-      containers,
-    );
+    await execCommandLink({ value: link } as ExecCommandStyle, containers);
     setActionType(undefined);
     setLink('');
   };
